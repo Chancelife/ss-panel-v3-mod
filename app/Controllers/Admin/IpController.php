@@ -160,7 +160,8 @@ class IpController extends AdminController
         $datatables = new Datatables(new DatatablesHelper());
         $datatables->query('Select log.id,log.user_id,user.user_name,node.name as node_name,log.rate,(log.u + log.d) as origin_traffic,log.traffic,log.log_time,alive_ip.ip,alive_ip.ip as location 
             from user_traffic_log as log,user,ss_node as node,alive_ip 
-            WHERE log.user_id = user.id AND log.node_id = node.id AND log.log_time=alive_ip.datetime');
+            WHERE log.user_id = alive_ip.userid AND alive_ip.userid = user.id AND log.node_id = node.id AND log.log_time=alive_ip.datetime and `datetime` > UNIX_TIMESTAMP() - 5000
+            ORDER BY datetime DESC');
 
         $datatables->edit('log_time', function ($data) {
             return date('Y-m-d H:i:s', $data['log_time']);
